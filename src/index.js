@@ -9,10 +9,10 @@ function main(){
 
    console.log("start compiling");
 
-   init();
-   scan();
-   let astNodeTree = statement();
-   interpretAST(astNodeTree,null,gData.gScope);
+   init(); //读取文件成字符串，存入gData.content
+   scan(); //扫描出一个token
+   let astNodeTree = statement(); //get ast
+   interpretAST(astNodeTree,null,gData.gScope); //解释ast，执行代码，变量声明，赋值
 
    console.log("compiled finished");
 }

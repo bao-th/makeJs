@@ -85,7 +85,7 @@ function skipOneLine() {
 }
 
 function scan(){
-    skipBlank();
+    skipBlank(); //非空格或换行，存入gData.putBack，为字符
     let {
         content,
         index,
@@ -105,7 +105,7 @@ function scan(){
         token.type = tokenTypes.T_EOF;
         return;
     }
-    let value = nextChar();
+    let value = nextChar(); //取出gData.putBack，并清掉
     let next;
 
     switch (value) {
@@ -242,13 +242,13 @@ function scan(){
             }
             else if(validVar(value)){
                 value = scanIdent(value);
-                token.type = scanKeyword(value);
+                token.type = scanKeyword(value); //关键字 || identifiers
                 token.value = value;
                 break;
             }
             errPrint(`Unrecognised char : (${value})`)
         }
-    if(token.type === tokenTypes.T_LINE_CMT){
+    if(token.type === tokenTypes.T_LINE_CMT){ // '//'
         skipOneLine();
         scan();
         console.log(gData.token)
@@ -266,7 +266,7 @@ function match(type,text){
     }
 }
 
-function nextChar(){
+function nextChar(){ //返回gData.putBack || 下一字符 || null
     let {
         content,
         putBack,
@@ -313,7 +313,7 @@ function rightPt(){
     return match(tokenTypes.T_RPT,")");
 }
 
-function semicolon(){
+function semicolon(){ //如果遇到';'，再扫描一个token
     return match(tokenTypes.T_SEMI,";");
 }
 

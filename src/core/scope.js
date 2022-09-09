@@ -18,7 +18,7 @@ class Scope {
             value:undefined
         };
     }
-    set(name,value,type){
+    set(name,value,type){ //给作用域中变量赋值
         if(!this.scope[name]){
             this.scope[name] = { _inner:true,name};
         }

@@ -16,10 +16,10 @@ function varDeclaration() {
     let tree=null,left=null,lastTokenValue;
     let type = token.type === tokenTypes.T_ARGUMENT ?  ASTNodeTypes.T_ARGUMENT : ASTNodeTypes.T_VAR;
     let index = 0;
-    scan();
+    scan(); //取下一个token
     do{
         if(token.type === tokenTypes.T_IDENT){
-            left = new ASTNode().initLeafNode(type,token.value);
+            left = new ASTNode().initLeafNode(type,token.value); //{op:'var',value:"arr"}
             lastTokenValue = left;
             if(type === tokenTypes.T_ARGUMENT){
                 left.option = index;
@@ -41,8 +41,8 @@ function varDeclaration() {
 
     if(token.type === tokenTypes.T_ASSIGN){
         scan();
-        let right = new ASTNode().initLeafNode(ASTNodeTypes.T_LVALUE,lastTokenValue.value);
-        let left = normalStatement();
+        let right = new ASTNode().initLeafNode(ASTNodeTypes.T_LVALUE,lastTokenValue.value); //{op:'leftValue',value:'arr'}
+        let left = normalStatement(); //{op:'',value:''}
         let assignTree = new ASTNode().initTwoNode(ASTNodeTypes.T_ASSIGN,left,right,null);
         tree = new ASTNode().initTwoNode(ASTNodeTypes.T_GLUE,tree,assignTree,null);
     }
@@ -105,7 +105,7 @@ function returnStatement(){
 }
 
 function normalStatement() {
-    let tree =  parseExpression(0);
+    let tree =  parseExpression(0); //获取树节点
     semicolon();
     return tree;
 }

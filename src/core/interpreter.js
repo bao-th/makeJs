@@ -128,7 +128,7 @@ function interpretAST(astNode,result=null,scope){
     rightResult = readVal(rightResult);
     switch (astNode.op) {
         case ASTNodeTypes.T_VAR:
-            scope.add(astNode.value);
+            scope.add(astNode.value); //作用域 添加 变量
             return;
         case ASTNodeTypes.T_ARGUMENT:
             scope.set(astNode.value,scope.get("arguments").value[astNode.option].value,astNode.type);

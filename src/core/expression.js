@@ -3,6 +3,7 @@ const {errPrint} = require("../init/commons");
 const {match,scan,putBackToken,semicolon,rightPt} = require("./scanner");
 const {ASTNode} = require("./ASTnode");
 
+// 表达式解析
 const prefixParserMap = {
     [tokenTypes.T_IDENT]:identifier,
     [tokenTypes.T_INT]:int,
@@ -40,6 +41,7 @@ function getPrecedence(){
     return infix.precedence;
 }
 
+// 表达式解析核心实现，使用普拉特分析法（也是递归下降分析法的一种）
 function parseExpression(precedenceValue) {
     let {token} = gData;
 
@@ -49,18 +51,18 @@ function parseExpression(precedenceValue) {
         errPrint(`unknown token : ${token.value}（${token.type}）`)
     }
 
-    let left = prefixParser();
+    let left = prefixParser(); //取树节点
     scan();
-    if(token.type === tokenTypes.T_SEMI
-        || token.type === tokenTypes.T_RPT
-        || token.type === tokenTypes.T_EOF
-        || token.type === tokenTypes.T_COMMA
-        || token.type === tokenTypes.T_COL
-        || token.type === tokenTypes.T_RMBR
+    if(token.type === tokenTypes.T_SEMI //；
+        || token.type === tokenTypes.T_RPT //)
+        || token.type === tokenTypes.T_EOF //''
+        || token.type === tokenTypes.T_COMMA //,
+        || token.type === tokenTypes.T_COL //:
+        || token.type === tokenTypes.T_RMBR //]
     ){
         return left;
     }
-    let value = getPrecedence();
+    let value = getPrecedence(); //取优先级
     while (value>precedenceValue){
         let type = token.type;
         if(token.type === tokenTypes.T_SEMI
@@ -156,7 +158,7 @@ function prefix(type){
     scan();
     let right = parseExpression(precedenceList.prefix);
     putBackToken(gData.token);
-    return new ASTNode().initUnaryNode(type,right,null);
+    return new ASTNode().initUnaryNode(type,right,null); // {left:{op:'', value:''}, op:'-'}
 }
 
 
@@ -174,7 +176,7 @@ function array() {
             scan();
             break;
         }
-        let exp = parseExpression() || undefined;
+        let exp = parseExpression() || undefined; //取下一个token树节点
         arr.push(exp);
     }while (token.type === tokenTypes.T_COMMA && scan());
     return new ASTNode().initLeafNode(ASTNodeTypes.T_ARRAY,arr);
